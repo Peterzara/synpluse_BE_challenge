@@ -3,7 +3,7 @@
 ## Introduction
 This project aims to design and implement a reusable REST API for an e-Banking Portal. The API is responsible for returning a paginated list of money account transactions for a given customer who is logged-on to the portal. The transactions are consumed from a Kafka topic and are filtered by the calendar month specified by the customer. Additionally, the API also returns the total credit and debit values at the current exchange rate, obtained from a third-party provider. The API has been developed using Spring Boot and packaged as a Docker image for ease of deployment to Kubernetes environments.
 
-![](/Users/panrui/Downloads/Synpluse/techChallenge/E-R diagram.png "ER Diagram")
+![](image/E-R diagram.png "ER Diagram")
 
 ## Getting Started
 1. First, make sure you have JDK 17, the latest Kafka and Docker Desktop installed on your machine, with the Kubernetes feature enabled.
@@ -58,10 +58,12 @@ To build the API, a Dockerfile has been provided in the project. This file conta
 ```
 To deploy the API to a K8s cluster, a `spring-boot-app.yml` and `kafka-zkp.yml` have been provided. The spring-boot-app.yml file contains instructions on how to create a K8s deployment and service for the API. The kafka-zkp.yml file contains instructions on how to create a Kafka cluster and zookeeper cluster.
 
-To deploy the Kafka and zookeeper, run the following command:
+To deploy the Kafka and zookeeper, run the following commands:
 
 ```jshelllanguage
-kubectl create -f kafka-zkp.yml
+kubectl create -f namespace.yml
+kubectl create -f zookeeper.yml
+kubectl create -f broker.yml
 ```
 
 To deploy the API, run the following command:
