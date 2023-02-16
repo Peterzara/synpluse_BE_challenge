@@ -17,6 +17,14 @@ public class TechChallengeApplication {
 		SpringApplication.run(TechChallengeApplication.class, args);
 	}
 
+	/** EXPLAIN:
+	 * The function returns an instance of CommandLineRunner (interface), which only has one abstract method
+	 * , we thus can pass a lambda function that implements the run() method of the CommandLineRunner
+	 * interface.
+	 * @param kafkaTemplate
+	 * @param transactionGenerator
+	 * @return instance of CommandLineRunner
+	 */
 	@Bean
 	CommandLineRunner commandLineRunner(KafkaTemplate<String, Transaction> kafkaTemplate, KafKaTransactionGenerator transactionGenerator) {
 		return args -> {

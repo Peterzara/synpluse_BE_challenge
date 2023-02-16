@@ -4,8 +4,9 @@ import com.example.techChallenge.exchangeRate.ExchangeRateService;
 import com.example.techChallenge.transaction.Transaction;
 import com.example.techChallenge.transaction.TransactionResponse;
 import com.example.techChallenge.transcationKafkaConfig.KafkaConsumer;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,25 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/customers/{customerId}/transactions")
+@RequiredArgsConstructor
 public class CustomerController {
-    @Autowired
-    private KafkaConsumer kafkaConsumer;
+    private final KafkaConsumer kafkaConsumer;
     @Value("${transactions.per.page}")
-    private int transactionsPerPage=100;
-
-    @Autowired
-    private ExchangeRateService exchangeRateService;
-
-    public CustomerController(KafkaConsumer kafkaConsumer,
-                              @Value("${transactions.per.page}") int transactionsPerPage,
-                              ExchangeRateService exchangeRateService) {
-        this.kafkaConsumer = kafkaConsumer;
-        this.transactionsPerPage = transactionsPerPage;
-        this.exchangeRateService = exchangeRateService;
-    }
-
-    public CustomerController() {
-    }
+    private int transactionsPerPage;
+    private final ExchangeRateService exchangeRateService;
 
     /**
      * get trans response by cid, month and page
@@ -52,11 +40,17 @@ public class CustomerController {
         if (transactions == null) {
             return ResponseEntity.notFound().build();
         }
-
+        List<Transaction> paginatedTransactions = null;
         int totalPages = (int) Math.ceil(transactions.size() / (double) transactionsPerPage);
-        int fromIndex = (pageNumber - 1) * transactionsPerPage;
-        int toIndex = Math.min(fromIndex + transactionsPerPage, transactions.size());
-        List<Transaction> paginatedTransactions = transactions.subList(fromIndex, toIndex);
+        try {
+            int fromIndex = (pageNumber - 1) * transactionsPerPage;
+            int toIndex = Math.min(fromIndex + transactionsPerPage, transactions.size());
+            paginatedTransactions = transactions.subList(fromIndex, toIndex);
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new TransactionResponse(null, -1, -1, pageNumber, totalPages));
+        }
         double totalCredit = 0;
         double totalDebit = 0;
         List<TransactionResponse.TransactionData> responseTransactions = new ArrayList<>();

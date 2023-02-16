@@ -1,11 +1,12 @@
 package com.example.techChallenge.account;
 
 import com.example.techChallenge.transaction.Transaction;
+import lombok.Data;
 
 import java.util.List;
 
+@Data
 public class Account {
-
     final private String cid;
     final private String IBAN;
     final private String currency;
@@ -16,25 +17,4 @@ public class Account {
         this.IBAN = IBAN;
         this.currency = currency;
     }
-
-    public String getCid() {
-        return cid;
-    }
-
-    public String getIBAN() {
-        return IBAN;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public List<Transaction> getTransactionList() {
-        return transactions;
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-    }
-
 }

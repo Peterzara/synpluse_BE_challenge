@@ -4,10 +4,12 @@ package com.example.techChallenge.transaction;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import lombok.Data;
 
 import java.util.Date;
 
 @JsonDeserialize
+@Data
 public class Transaction {
 
     /**
@@ -25,66 +27,6 @@ public class Transaction {
     private String description;
     private String currency;
     private int month;
-
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public void setIBAN(String IBAN) {
-        this.IBAN = IBAN;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-    public String getId() {
-        return id;
-    }
-
-    public String getCid() {  return cid;  }
-    public double getAmount() {
-        return amount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public String getIBAN() {
-        return IBAN;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 
     @JsonCreator
     public Transaction(@JsonProperty("id") String id,

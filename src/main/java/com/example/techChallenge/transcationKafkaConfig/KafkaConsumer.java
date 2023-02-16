@@ -1,6 +1,7 @@
 package com.example.techChallenge.transcationKafkaConfig;
 
 import com.example.techChallenge.transaction.Transaction;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -10,20 +11,15 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service // CustomerService
+@RequiredArgsConstructor
 public class KafkaConsumer {
 
     private final KafkaTemplate<String, Transaction> kafkaTemplate;
     private final Map<String, List<Transaction>> transactionsByCustomer;
-
-    public KafkaConsumer(KafkaTemplate<String, Transaction> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
-        this.transactionsByCustomer = new HashMap<>();
-    }
 
     @KafkaListener(topics = "transactions", groupId = "groupId", containerFactory = "factory")
     public void consumeTransaction(ConsumerRecord<String, Transaction> record) {

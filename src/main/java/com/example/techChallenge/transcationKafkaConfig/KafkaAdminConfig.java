@@ -2,7 +2,9 @@ package com.example.techChallenge.transcationKafkaConfig;
 
 import com.example.techChallenge.transaction.Transaction;
 import com.example.techChallenge.transaction.TransactionJsonSerializer;
+import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.ListTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -14,8 +16,11 @@ import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 @Configuration
 public class KafkaAdminConfig {
@@ -32,8 +37,19 @@ public class KafkaAdminConfig {
     }
 
     @Bean
-    public NewTopic transactionsTopic() {
-        return new NewTopic("transactions", 1, (short) 1);
+    public NewTopic transactionsTopic() throws ExecutionException, InterruptedException {
+        final String topicName = "transactions";
+        final int numPartitions = 1;
+        final short replicationFactor = 1;
+        AdminClient admin = AdminClient.create(kafkaAdmin().getConfigurationProperties());
+        ListTopicsResult topics = admin.listTopics();
+        Set<String> topicNames = topics.names().get();
+        if (!topicNames.contains(topicName)) {
+            NewTopic newTopic = new NewTopic(topicName, numPartitions, replicationFactor);
+            admin.createTopics(Collections.singleton(newTopic));
+        }
+        admin.close();
+        return new NewTopic(topicName, numPartitions, replicationFactor);
     }
 
     @Bean

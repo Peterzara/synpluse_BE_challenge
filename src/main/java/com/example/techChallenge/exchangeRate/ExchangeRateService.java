@@ -4,7 +4,7 @@ package com.example.techChallenge.exchangeRate;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 
 @Service
+@RequiredArgsConstructor
 public class ExchangeRateService {
 
     private String baseCurrency = "HKD";
@@ -24,8 +25,7 @@ public class ExchangeRateService {
     @Value("${exchange.api.password}")
     private String API_KEY;
 
-    @Autowired
-    private RestTemplateBuilder restTemplateBuilder;
+    private final RestTemplateBuilder restTemplateBuilder;
     private RestTemplate restTemplate;
 
     @PostConstruct
